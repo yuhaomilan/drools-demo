@@ -1,0 +1,35 @@
+package rules
+
+import java.util.Map;
+import org.slf4j.Logger;
+import org.apache.commons.collections4.MapUtils;
+global org.slf4j.Logger logger
+
+rule "gx" salience -1
+when
+    map : Map(age > 30 && sex == "female")
+then
+    if(logger == null)
+    {
+       System.out.println("logger is empty");
+    }
+    if(MapUtils.isEmpty(map))
+    {
+      logger.info("rule map is empty");
+    }
+    else
+    {
+      logger.info("rule map:"+map);
+      logger.info("郭鑫是只猫");
+      map.put("age", 29);
+      update(map);
+    }
+end
+
+
+rule "xusheng"
+when
+    map : Map(age < 30 )
+then
+    logger.info("猫猫第二段");
+end

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <properties>
+        <property name="appName">drools-demo</property>
+        <property name="logHome">/data/applogs/</property>
+    </properties>
+
+    <Appenders>
+        <Console name="CONSOLE" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %msg%n"/>
+        </Console>
+
+        <RollingFile name="APP-LOG-APPENDER" fileName="${logHome}/${appName}/logs/app.log"
+                     filePattern="${logHome}/${appName}/logs/app_%d{yyyy-MM-dd}.log">
+
+            <!--<ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="NEUTRAL"/>-->
+            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy max="15"/>
+        </RollingFile>
+
+        <RollingFile name="COMMON-ERROR-APPENDER" fileName="${logHome}/${appName}/logs/common-error.log"
+                     filePattern="${logHome}/${appName}/logs/common-error.log_%d{yyyy-MM-dd}.log">
+            <!--<JsonLayout/>-->
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy max="15"/>
+        </RollingFile>
+
+        <RollingFile name="METRIC-DIGEST" fileName="${logHome}/${appName}/logs/metric-digest.log"
+                     filePattern="${logHome}/${appName}/logs/metric-digest_%d{yyyy-MM-dd}.log">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy max="15"/>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <logger name="METRIC-DIGEST" level="info">
+            <appender-ref ref="METRIC-DIGEST"/>
+        </logger>
+
+        <logger name="*" level="info">
+            <appender-ref ref="COMMON-ERROR-APPENDER"/>
+        </logger>
+
+
+        <!--  console日志 -->
+        <Root level="info" includeLocation="true">
+            <appender-ref ref="APP-LOG-APPENDER"/>
+            <appender-ref ref="CONSOLE"/>
+        </Root>
+    </Loggers>
+</Configuration>
